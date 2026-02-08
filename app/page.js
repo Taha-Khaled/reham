@@ -1,66 +1,79 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import "./page.css";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function Page() {
+  const router = useRouter();
+  const noButtonRef = useRef(null);
+
+  const [showContainer, setShowContainer] = useState(true);
+  const [yesScale, setYesScale] = useState(1);
+
+  useEffect(() => {
+    if (window.innerWidth < 700) {
+      setShowContainer(false);
+    }
+  }, []);
+
+  const nextPage = () => {
+    router.push("/yes");
+  };
+
+  const moveButton = () => {
+    const button = noButtonRef.current;
+    if (!button) return;
+
+    const x = Math.random() * (window.innerWidth - button.offsetWidth) - 100;
+    const y = Math.random() * (window.innerHeight - button.offsetHeight) - 30;
+
+    button.style.left = `${x}px`;
+    button.style.top = `${y}px`;
+
+    setYesScale((prev) => Math.min(prev + 0.1, 2));
+  };
+
+  if (!showContainer) return null;
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="container">
+      <div>
+        <h1 className="header_text">Dear Reham,</h1>
+        <h1 className="header_text">Because every day with you already feels special</h1>
+        <h1 className="header_text">Will you be my Valentine ? ♥</h1>
+      </div>
+
+      <div className="gif_container">
+        <img
+          src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDdtZ2JiZDR0a3lvMWF4OG8yc3p6Ymdvd3g2d245amdveDhyYmx6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif"
+          alt="Cute animated illustration"
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+
+      <div className="buttons">
+        <button
+          className="btn"
+          id="yesButton"
+          style={{
+            transform: `scale(${yesScale})`,
+            transition: "transform 0.2s ease",
+          }}
+          onClick={nextPage}
+        >
+          Yesss
+        </button>
+
+        <button
+          ref={noButtonRef}
+          className="btn"
+          id="noButton"
+          onMouseOver={moveButton}
+          onClick={moveButton}
+        >
+          No
+        </button>
+      </div>
     </div>
   );
 }
